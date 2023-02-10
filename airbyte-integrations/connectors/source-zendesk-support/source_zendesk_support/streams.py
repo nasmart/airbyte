@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2022 Airbyte, Inc., all rights reserved.
+# Copyright (c) 2023 Airbyte, Inc., all rights reserved.
 #
 
 import calendar
@@ -12,8 +12,6 @@ from collections import deque
 from concurrent.futures import Future, ProcessPoolExecutor
 from datetime import datetime, timedelta
 from functools import partial
-
-from airbyte_cdk.sources.streams.core import StreamData
 from math import ceil
 from pickle import PickleError, dumps
 from typing import Any, Iterable, List, Mapping, MutableMapping, Optional, Union
@@ -24,6 +22,7 @@ import pytz
 import requests
 from airbyte_cdk.models import SyncMode
 from airbyte_cdk.sources.streams.availability_strategy import AvailabilityStrategy
+from airbyte_cdk.sources.streams.core import StreamData
 from airbyte_cdk.sources.streams.http import HttpStream
 from airbyte_cdk.sources.streams.http.auth.core import HttpAuthenticator
 from airbyte_cdk.sources.streams.http.exceptions import DefaultBackoffException
@@ -548,7 +547,7 @@ class Tickets(SourceZendeskIncrementalExportStream):
         try:
             yield from super(Tickets, self).read_records(sync_mode, cursor_field, stream_slice, stream_state)
         except HTTPError as e:
-            if e.response.status_code == 400 and e.response.json().get('error', '') == 'StartTimeTooRecent':
+            if e.response.status_code == 400 and e.response.json().get("error", "") == "StartTimeTooRecent":
                 return []
             raise e
 
